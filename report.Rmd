@@ -1,0 +1,35 @@
+---
+title: "Medication Access in Santiago, Chile"
+author: "Gonzalo Nelis S."
+date: "22/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(leaflet)
+```
+
+This graph shows the per capita number of pharmacies for several communes in Santiago, Chile. The main idea is to show how different areas of the same city have such a disparity in medication access.
+
+```{r data, message=F}
+data <- read.csv('data.csv', sep=';', encoding = "UTF-8")
+names(data)[1]<-'ID'
+
+data$PharmperCapita<-data$Pharmacies/data$Pop*1000
+
+library(leaflet)
+data %>% leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(fillOpacity = 0.5, 
+                   radius = data$PharmperCapita*30,
+                   popup = paste(data$ID,data$Pop, sep=', Pop: '))
+
+```
+
+Sources:
+
+- [https://es.wikipedia.org/wiki/Anexo:Comunas_de_Chile](Wikipédia - Chile's Communes)
+- [https://www.minsal.cl/sites/default/files/files/2015_01_%20DISTRIBUCI%C3%93N%20FARMACIAS%20Situaci%C3%B3n%20Diciembre%202014%20TTA.PDF](MinSal - Pharmacies per Region)
+
